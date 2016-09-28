@@ -1,0 +1,215 @@
+diff -urN OpenWrt-ImageBuilder-15.05.1-ramips-rt288x.Linux-x86_64/target/linux/ramips/base-files/etc/board.d/01_leds OpenWrt-ImageBuilder-15.05.1-ramips-rt288x.Linux-x86_64-dir605a2/target/linux/ramips/base-files/etc/board.d/01_leds
+--- OpenWrt-ImageBuilder-15.05.1-ramips-rt288x.Linux-x86_64/target/linux/ramips/base-files/etc/board.d/01_leds	2016-01-03 10:37:16.000000000 +0800
++++ OpenWrt-ImageBuilder-15.05.1-ramips-rt288x.Linux-x86_64-dir605a2/target/linux/ramips/base-files/etc/board.d/01_leds	2016-09-18 23:40:50.963895957 +0800
+@@ -97,6 +97,10 @@
+ 		ucidef_set_led_default "wan" "WAN LED (amber)" "d-link:amber:wan" "1"
+ 		set_wifi_led "rt2800pci-phy0::radio"
+ 		;;
++	dir-605-a2)
++		ucidef_set_led_default "status" "Status LED (amber)" "d-link:amber:status" "0"
++		set_wifi_led "rt2800soc-phy0::radio"
++		;;
+ 	dir-615-d|\
+ 	dir-615-h1)
+ 		ucidef_set_led_default "status" "Status LED (amber)" "d-link:amber:status" "0"
+diff -urN OpenWrt-ImageBuilder-15.05.1-ramips-rt288x.Linux-x86_64/target/linux/ramips/base-files/etc/board.d/02_network OpenWrt-ImageBuilder-15.05.1-ramips-rt288x.Linux-x86_64-dir605a2/target/linux/ramips/base-files/etc/board.d/02_network
+--- OpenWrt-ImageBuilder-15.05.1-ramips-rt288x.Linux-x86_64/target/linux/ramips/base-files/etc/board.d/02_network	2016-01-03 10:37:16.000000000 +0800
++++ OpenWrt-ImageBuilder-15.05.1-ramips-rt288x.Linux-x86_64-dir605a2/target/linux/ramips/base-files/etc/board.d/02_network	2016-09-18 23:38:03.476322629 +0800
+@@ -198,6 +198,7 @@
+ 
+ 	ar670w | \
+ 	ar725w | \
++	dir-605-a2 | \
+ 	rt-n15 | \
+ 	wl-351)
+ 		ucidef_set_interfaces_lan_wan "eth0.1" "eth0.2"
+diff -urN OpenWrt-ImageBuilder-15.05.1-ramips-rt288x.Linux-x86_64/target/linux/ramips/base-files/etc/diag.sh OpenWrt-ImageBuilder-15.05.1-ramips-rt288x.Linux-x86_64-dir605a2/target/linux/ramips/base-files/etc/diag.sh
+--- OpenWrt-ImageBuilder-15.05.1-ramips-rt288x.Linux-x86_64/target/linux/ramips/base-files/etc/diag.sh	2016-01-03 10:37:16.000000000 +0800
++++ OpenWrt-ImageBuilder-15.05.1-ramips-rt288x.Linux-x86_64-dir605a2/target/linux/ramips/base-files/etc/diag.sh	2016-09-18 23:36:39.430432471 +0800
+@@ -45,7 +45,7 @@
+ 	d105)
+ 		status_led="d105:red:power"
+ 		;;
+-	dcs-930 | dir-300-b1 | dir-600-b1 | dir-600-b2 | dir-610-a1 | dir-615-h1 | dir-615-d | dir-620-a1| dir-620-d1| dir-300-b7| dir-320-b1)
++	dcs-930 | dir-300-b1 | dir-600-b1 | dir-600-b2 | dir-605-a2 | dir-610-a1 | dir-615-h1 | dir-615-d | dir-620-a1| dir-620-d1| dir-300-b7| dir-320-b1)
+ 		status_led="d-link:green:status"
+ 		;;
+ 	dcs-930l-b1)
+diff -urN OpenWrt-ImageBuilder-15.05.1-ramips-rt288x.Linux-x86_64/target/linux/ramips/base-files/lib/ramips.sh OpenWrt-ImageBuilder-15.05.1-ramips-rt288x.Linux-x86_64-dir605a2/target/linux/ramips/base-files/lib/ramips.sh
+--- OpenWrt-ImageBuilder-15.05.1-ramips-rt288x.Linux-x86_64/target/linux/ramips/base-files/lib/ramips.sh	2016-01-03 10:37:16.000000000 +0800
++++ OpenWrt-ImageBuilder-15.05.1-ramips-rt288x.Linux-x86_64-dir605a2/target/linux/ramips/base-files/lib/ramips.sh	2016-09-18 23:33:11.833388140 +0800
+@@ -124,6 +124,9 @@
+ 	*"DIR-600 B2")
+ 		name="dir-600-b2"
+ 		;;
++	*"DIR-605 A2")
++		name="dir-605-a2"
++		;;
+ 	*"DIR-610 A1")
+ 		name="dir-610-a1"
+ 		;;
+diff -urN OpenWrt-ImageBuilder-15.05.1-ramips-rt288x.Linux-x86_64/target/linux/ramips/base-files/lib/upgrade/platform.sh OpenWrt-ImageBuilder-15.05.1-ramips-rt288x.Linux-x86_64-dir605a2/target/linux/ramips/base-files/lib/upgrade/platform.sh
+--- OpenWrt-ImageBuilder-15.05.1-ramips-rt288x.Linux-x86_64/target/linux/ramips/base-files/lib/upgrade/platform.sh	2016-01-03 10:37:16.000000000 +0800
++++ OpenWrt-ImageBuilder-15.05.1-ramips-rt288x.Linux-x86_64-dir605a2/target/linux/ramips/base-files/lib/upgrade/platform.sh	2016-09-20 21:10:46.325067542 +0800
+@@ -142,6 +142,7 @@
+ 		}
+ 		return 0
+ 		;;
++	dir-605-a2 |\
+ 	ar670w)
+ 		[ "$magic" != "6d000080" ] && {
+ 			echo "Invalid image type."
+diff -urN OpenWrt-ImageBuilder-15.05.1-ramips-rt288x.Linux-x86_64/target/linux/ramips/dts/DIR-605-A2.dts OpenWrt-ImageBuilder-15.05.1-ramips-rt288x.Linux-x86_64-dir605a2/target/linux/ramips/dts/DIR-605-A2.dts
+--- OpenWrt-ImageBuilder-15.05.1-ramips-rt288x.Linux-x86_64/target/linux/ramips/dts/DIR-605-A2.dts	1970-01-01 08:00:00.000000000 +0800
++++ OpenWrt-ImageBuilder-15.05.1-ramips-rt288x.Linux-x86_64-dir605a2/target/linux/ramips/dts/DIR-605-A2.dts	2016-09-20 01:17:46.031158718 +0800
+@@ -0,0 +1,102 @@
++/dts-v1/;
++
++/include/ "rt2880.dtsi"
++
++/ {
++	compatible = "DIR-605-A2", "ralink,rt2880-soc";
++	model = "D-Link DIR-605 A2";
++
++	palmbus@300000 {
++		gpio0: gpio@600 {
++			status = "okay";
++		};
++	};
++
++	pinctrl {
++		state_default: pinctrl0 {
++			gpio {
++				ralink,group = "i2c", "spi", "uartlite";
++				ralink,function = "gpio";
++			};
++		};
++	};
++
++	ethernet@400000 {
++		status = "okay";
++		mtd-mac-address = <&factory 0x2004>;
++
++		port@0 {
++			phy-handle = <&phy0>;
++			phy-mode = "mii";
++		};
++
++		mdio-bus {
++			status = "okay";
++			phy0: ethernet-phy@0 {
++				phy-mode = "mii";
++				reg = <0>;
++			};
++		};
++	};
++
++	wmac@480000 {
++		status = "okay";
++		ralink,mtd-eeprom = <&factory 0x2000>;
++	};
++
++	cfi@bdc00000 {
++		compatible = "cfi-flash";
++		reg = <0xbc400000 0x800000>;
++
++		bank-width = <2>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++
++		u-boot@0 {
++			reg = <0x0 0x30000>;
++			label = "u-boot";
++			read-only;
++		};
++
++		factory: factory@30000 {
++			reg = <0x30000 0x10000>;
++			label = "factory";
++			read-only;
++		};
++
++		firmware@40000 {
++			reg = <0x40000 0x3c0000>;
++			label = "firmware";
++		};
++	};
++
++	gpio-leds {
++		compatible = "gpio-leds";
++
++		status {
++			label = "d-link:amber:status";
++			gpios = <&gpio0 7 1>;
++		};
++		status2 {
++			label = "d-link:green:status";
++			gpios = <&gpio0 3 1>;
++		};
++	};
++
++	gpio-keys-polled {
++		compatible = "gpio-keys-polled";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		poll-interval = <100>;
++		wps {
++			label = "wps";
++			gpios = <&gpio0 0 1>;
++			linux,code = <0x211>;
++		};
++		reset {
++			label = "reset";
++			gpios = <&gpio0 9 1>;
++			linux,code = <0x198>;
++		};
++	};
++};
+diff -urN OpenWrt-ImageBuilder-15.05.1-ramips-rt288x.Linux-x86_64/target/linux/ramips/image/Makefile OpenWrt-ImageBuilder-15.05.1-ramips-rt288x.Linux-x86_64-dir605a2/target/linux/ramips/image/Makefile
+--- OpenWrt-ImageBuilder-15.05.1-ramips-rt288x.Linux-x86_64/target/linux/ramips/image/Makefile	2016-01-22 06:53:04.000000000 +0800
++++ OpenWrt-ImageBuilder-15.05.1-ramips-rt288x.Linux-x86_64-dir605a2/target/linux/ramips/image/Makefile	2016-09-18 23:52:05.312778641 +0800
+@@ -381,10 +381,36 @@
+ 	fi
+ endef
+ 
++# D-Link DIR-605 A2 -- LZMA without uImage header
++define BuildFirmware/DIR-605-A2/squashfs
++	$(call PatchKernelLzmaDtb,$(2),$(3),$(5))
++
++	$(eval output_name=$(IMG_PREFIX)-$(2)-$(1)-$(if $(4),$(4),sysupgrade).bin)
++	$(eval factory_name=$(IMG_PREFIX)-$(2)-$(1)-factory.bin)
++
++	( dd if=$(KDIR)/vmlinux-$(2).bin.lzma bs=65536 \
++		conv=sync; dd if=$(KDIR)/root.$(1) ) > $(KDIR)/$(output_name)
++
++	$(call prepare_generic_squashfs,$(KDIR)/$(output_name))
++
++	if [ `stat -c%s "$(KDIR)/$(output_name)"` \
++		-gt $(ralink_default_fw_size_4M) ]; then \
++		echo "Warning: $(KDIR)/$(output_name) is too big" >&2; \
++	else \
++		mkwrgimg -i $(KDIR)/$(output_name) \
++			-d "/dev/mtdblock/2" \
++			-s "wrgn18_dlwbr_dir605" \
++			-o $(BIN_DIR)/$(factory_name); \
++		$(CP) $(KDIR)/$(output_name) $(BIN_DIR)/$(output_name); \
++	fi
++endef
++
+ #
+ # RT288X Profiles
+ #
+ 
++Image/Build/Profile/DIR-605-A2=$(call BuildFirmware/DIR-605-A2/$(1),$(1),dir-605-a2,DIR-605-A2)
++
+ Image/Build/Profile/AR670W=$(call BuildFirmware/AR670W/$(1),$(1),ar670w,AR670W)
+ 
+ Image/Build/Profile/AR725W=$(call BuildFirmware/Gemtek/$(1),$(1),ar725w,AR725W)
+@@ -403,6 +429,7 @@
+ 
+ ifeq ($(SUBTARGET),rt288x)
+ define Image/Build/Profile/Default
++	$(call Image/Build/Profile/DIR-605-A2,$(1))
+ 	$(call Image/Build/Profile/AR670W,$(1))
+ 	$(call Image/Build/Profile/AR725W,$(1))
+ 	$(call Image/Build/Profile/F5D8235V1,$(1))
